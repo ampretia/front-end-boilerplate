@@ -3,51 +3,78 @@
   <section class="section">
     <div class="container">
       <h1 class="title">
-        Hello World
+       FabCar
       </h1>
-      <p class="has-text-primary">
-        My first website with <strong>Bulma</strong>!
-      </p>
       <p>
-        <a class="button is-primary">Primary</a>
-        <a class="button is-link">Link</a>
-        <a class="button is-info">Info</a>
-        <a class="button is-success">Success</a>
-        <a class="button is-warning">Warning</a>
-        <a class="button is-danger">Danger</a>
+        <a class="button is-primary" v-on:click="getallcars">Get All Cars</a>
         </p>
    </div>
     <div class="container">
-    <canvas id="planet-chart"></canvas>
+      <table class="table">
+      <thead>
+          <tr>
+            <th>Key</th>
+            <th>Color</th>
+            <th>Make</th>
+            <th>Model</th>
+            <th>Owner</th>
+            <th>Action</th>
+          </tr>
+      </thead>
+      <tbody>
+        <tr v-for="car of cars" v-bind:key="car.key">
+          <td>{{car.Key}}</td>
+          <td>{{car.Record.color}}</td>
+          <td>{{car.Record.make}}</td>
+          <td>{{car.Record.model}}</td>
+          <td>{{car.Record.owner}}</td>
+          <td><div class="field has-addons">
+  <div class="control">
+    <input class="input" type="text" placeholder="Find a repository">
+  </div>
+  <div class="control">
+    <a class="button is-info">
+      Search
+    </a>
+  </div>
+</div></td>
+        </tr>
+      </tbody>
+  </table>
     </div>
   </section>
 </template>
 
 <script>
 /* eslint-disable */
-import Chart from 'chart.js';
-import planetChartData from '../chart-data.js'
+import axios from 'axios';
 
 export default {
-  name: 'HelloWorld',
+  name: 'FabCar',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App',
-      planetChartData: planetChartData,
+      cars : []
     }
   },
   methods: {
-    createChart(chartId, chartData) {
-      const ctx = document.getElementById(chartId);
-      const myChart = new Chart(ctx, {
-        type: chartData.type,
-        data: chartData.data,
-        options: chartData.options,
+    async getallcars(){
+      console.log('Getting All Cars');
+     try {
+      const response = await axios.post(`http://localhost:3000/fabcar/queryAllCars`)
+      console.log(response.data);
+      JSON.parse(response.data).forEach((e)=>{
+        this.cars.push(e)
       })
+    } catch (e) {
+     console.log(e);
+    }
+    },
+    async changeowner(key){
+      console.log(`Changing owner of ${key}`)
     }
   },
   mounted() {
-    this.createChart('planet-chart', this.planetChartData)
+
   }
 }
 </script>
